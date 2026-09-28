@@ -282,23 +282,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ├── pyproject.toml
 └── uv.lock</code></pre>
 <p>If you go on to add notebooks, scripts, data documentation, or a <code>README</code>, the project will grow more files and folders around this core. Each of the four items above plays a distinct, non-overlapping role.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Version-control principle
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Commit <code>pyproject.toml</code> and <code>uv.lock</code> to Git, alongside your code.</p>
-<p>Do <strong>not</strong> commit <code>.venv/</code>. It is large, platform-specific, generated state, and can always be recreated from the two files above.</p>
-</div>
-</div>
 <section id="pyproject.toml" class="level3">
 <h3 class="anchored" data-anchor-id="pyproject.toml"><code>pyproject.toml</code></h3>
-<p>This is the project’s main, human-edited configuration file. It follows a standard format shared across the modern Python packaging ecosystem (not something specific to <code>uv</code>), which is part of why tools like Poetry and PDM can also read it. A simplified version looks like:</p>
+<p>This is the project’s main configuration file. It follows a standard format shared across the modern Python packaging ecosystem (not something specific to <code>uv</code>), which is part of why tools like Poetry and PDM can also read it. A simplified version looks like:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode toml code-with-copy"><code class="sourceCode toml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[project]</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dt">name</span> <span class="op">=</span> <span class="st">"python-local-demo"</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="dt">version</span> <span class="op">=</span> <span class="st">"0.1.0"</span></span>
@@ -308,14 +294,14 @@ Version-control principle
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"matplotlib"</span><span class="op">,</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pandas"</span><span class="op">,</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>It records your project’s <strong>declared, direct dependencies</strong> and its Python compatibility requirement. Note what is <em>absent</em>: no transitive dependencies, and no exact pinned versions — those are deliberately kept in a separate file, described next. You normally edit this list using commands, rather than by hand:</p>
+<p>It records your project’s <strong>declared, direct dependencies</strong> and its Python compatibility requirement. Note what is <em>absent</em>: no transitive dependencies, and no exact pinned versions. You normally edit this list using:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add seaborn</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> remove matplotlib</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="uv.lock" class="level3">
 <h3 class="anchored" data-anchor-id="uv.lock"><code>uv.lock</code></h3>
-<p>This is the <strong>lockfile</strong> — the resolved counterpart to the declared list above. It records the complete dependency graph, every transitive dependency, the exact version of each, and a cryptographic hash of the file that was downloaded for each one (so that a future install can verify it received exactly the same bytes, not merely “a” version matching the same version number).</p>
-<p>This is what allows <code>uv</code> to reconstruct a bit-for-bit consistent environment later, on a different machine. Do not edit it by hand — treat it as a build artefact that <code>uv</code> maintains for you.</p>
+<p>This is the <strong>lockfile</strong> — the resolved counterpart to the declared list above. It records the complete dependency graph, every transitive dependency, the exact version of each, and a cryptographic hash of the file that was downloaded for each one (so that a future install can verify it received exactly the same bytes, not merely a version matching the same version number).</p>
+<p>This allows <code>uv</code> to reconstruct a bit-for-bit consistent environment later, on a different machine. Do not edit it by hand — treat it as a build artefact that <code>uv</code> maintains for you.</p>
 <p>To explicitly (re)create the lockfile from the current <code>pyproject.toml</code>, without touching the installed environment:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> lock</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To create or update the local environment <em>from</em> the current project files (this is what most day-to-day use needs):</p>
@@ -332,7 +318,7 @@ Version-control principle
 <section id="venv" class="level3">
 <h3 class="anchored" data-anchor-id="venv"><code>.venv/</code></h3>
 <p>The project’s actual <strong>virtual environment</strong>: a self-contained folder holding a Python interpreter dedicated to this project, every package installed for it, and any command-line tools those packages provide (such as <code>jupyter</code>).</p>
-<p>Treat <code>.venv/</code> as disposable, generated local state — never something to back up, share, or edit directly. If it is deleted, or corrupted, or you simply want a clean slate, rebuild it from the two files above:</p>
+<p>If <code>.venv/</code> is deleted, or corrupted, or you simply want a clean slate, rebuild it from the two files above:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -340,22 +326,12 @@ Version-control principle
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-What should go into Git?
+Version-control principle
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Usually commit:</strong></p>
-<pre class="text"><code>pyproject.toml
-uv.lock
-.python-version
-your code
-your notebooks
-README.md</code></pre>
-<p><strong>Usually do not commit:</strong></p>
-<pre class="text"><code>.venv/
-__pycache__/
-large generated outputs
-secrets or credentials</code></pre>
+<p>Commit <code>pyproject.toml</code>, <code>.python-version</code>, and <code>uv.lock</code> to Git, alongside your code.</p>
+<p>Do <strong>not</strong> commit <code>.venv/</code>. It is large, platform-specific, generated state, and can always be recreated from the two files above.</p>
 </div>
 </div>
 

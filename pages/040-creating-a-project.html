@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#add-some-packages" id="toc-add-some-packages" class="nav-link active" data-scroll-target="#add-some-packages">Add some packages</a></li>
-  <li><a href="#a-first-real-test" id="toc-a-first-real-test" class="nav-link" data-scroll-target="#a-first-real-test">A first real test</a></li>
+  <li><a href="#a-final-test" id="toc-a-final-test" class="nav-link" data-scroll-target="#a-final-test">A final test</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/uob-training/edit/main/pages/040-creating-a-project.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/uob-training/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -307,7 +307,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If you see instructions elsewhere that use only <code>uv init --bare</code> without pinning a Python version, those are equally valid — <code>uv</code> will simply use whichever compatible Python it finds or installs by default. We are being explicit here because this session’s subject is precisely how to make that choice deliberate and recorded, rather than implicit.</p>
+<p>If you see instructions elsewhere that use only <code>uv init --bare</code> without pinning a Python version, those are equally valid — <code>uv</code> will simply use whichever compatible Python it finds or installs by default.</p>
 </div>
 </div>
 <section id="add-some-packages" class="level3">
@@ -330,15 +330,15 @@ Installed 87 packages in 1.21s
 <li>installed every required package — direct and transitive — into that environment.</li>
 </ul>
 </section>
-<section id="a-first-real-test" class="level3">
-<h3 class="anchored" data-anchor-id="a-first-real-test">A first real test</h3>
+<section id="a-final-test" class="level3">
+<h3 class="anchored" data-anchor-id="a-final-test">A final test</h3>
 <p>Run Python inside the project’s environment, and check the version:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">--version</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>Python 3.13.7</code></pre>
 <p>Then use a package you just installed, to check it was actually wired up correctly:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-c</span> <span class="st">"import pandas; print('pandas', pandas.__version__)"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>pandas 2.2.3</code></pre>
-<p>If that prints a version number rather than an error, your project environment is working end-to-end: the right interpreter, running with the right package installed, resolved and recorded by <code>uv</code>.</p>
+<p>If that prints a version number rather than an error, your project environment is working end-to-end.</p>
 
 
 </section>

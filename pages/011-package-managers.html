@@ -240,7 +240,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <p>A <strong>package manager</strong> is software that installs, updates, removes, and keeps track of other software packages, together with the constraints between them. Operating systems have long had their own (<code>apt</code> on Debian/Ubuntu, <code>brew</code> on macOS, <code>winget</code> on Windows); Python has its own ecosystem, built around the <a href="https://pypi.org/">Python Package Index (PyPI)</a> as the central public repository.</p>
-<p>In Python, a <em>package</em> is simply reusable code, published so that other people do not need to write it themselves. For example:</p>
+<p>In Python, a <em>package</em> is reusable code published so that other people do not need to write it themselves. For example:</p>
 <ul>
 <li><code>pandas</code> provides data structures and operations for tabular data;</li>
 <li><code>numpy</code> provides fast, array-based numerical computing;</li>
@@ -249,36 +249,24 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <section id="dependencies-and-why-resolution-is-hard" class="level3">
 <h3 class="anchored" data-anchor-id="dependencies-and-why-resolution-is-hard">Dependencies, and why resolution is hard</h3>
-<p>A package can itself depend on other packages, which depend on others in turn. These indirect requirements are called <strong>transitive dependencies</strong>. Installing <code>pandas</code>, for example, pulls in <code>numpy</code> as a dependency without you asking for <code>numpy</code> by name.</p>
-<p>This quickly produces a <em>dependency graph</em> rather than a simple list. Two direct dependencies you ask for might each place different, incompatible constraints on a shared transitive dependency — package A might require <code>numpy&gt;=1.24</code>, while package B only supports <code>numpy&lt;1.24</code>. Finding a single set of versions that satisfies every constraint simultaneously is known as <strong>dependency resolution</strong>, and in general it is a computationally hard problem (it is closely related to the Boolean satisfiability problem, SAT). This is precisely the part of environment management that is tedious and error-prone to do by hand, and precisely the part a package manager exists to automate.</p>
-<p>Historically, Python’s own installer, <code>pip</code>, resolved dependencies using a comparatively simple, backtracking algorithm, and for a long time did not resolve them at all — it simply installed packages in the order given, sometimes silently overwriting an already-installed, compatible version with an incompatible one. This is one of the main reasons the community has since built more sophisticated tools (<code>pip-tools</code>, <code>Poetry</code>, <code>PDM</code>, <code>conda</code>, and now <code>uv</code>) around a proper resolver.</p>
+<p>A package can itself depend on other packages, which may depend on others in turn. These indirect requirements are called <strong>transitive dependencies</strong>. Installing <code>pandas</code>, for example, pulls in <code>numpy</code> as a dependency without you asking for it by name.</p>
+<p>This quickly produces a <em>dependency graph</em> rather than a simple list. Two direct dependencies might place incompatible constraints on a shared transitive dependency — package A might require <code>numpy&gt;=1.24</code>, while package B only supports <code>numpy&lt;1.24</code>.</p>
+<p>Finding a single set of versions that satisfies every constraint is known as <strong>dependency resolution</strong>. In general, this is a computationally hard problem, closely related to the Boolean satisfiability problem (SAT). This is exactly the kind of tedious and error-prone work that a package manager automates.</p>
+<p>Historically, Python’s own installer, <code>pip</code>, used comparatively simple dependency handling and, for a long time, did not fully resolve dependency conflicts. This is one reason the community has built more sophisticated tools such as <code>pip-tools</code>, <code>Poetry</code>, <code>PDM</code>, <code>conda</code>, and now <code>uv</code>.</p>
 </section>
 <section id="why-use-uv" class="level3">
 <h3 class="anchored" data-anchor-id="why-use-uv">Why use <code>uv</code>?</h3>
-<p><a href="https://docs.astral.sh/uv/"><code>uv</code></a>, developed by Astral, is deliberately scoped to do more than resolve and install packages. It also:</p>
+<p><a href="https://docs.astral.sh/uv/"><code>uv</code></a>, developed by Astral, is designed to do more than resolve and install packages. It also:</p>
 <ul>
-<li>installs and manages <strong>Python interpreters themselves</strong> (not just packages);</li>
+<li>installs and manages <strong>Python interpreters themselves</strong>;</li>
 <li>creates and manages per-project <strong>virtual environments</strong> automatically;</li>
 <li>adds and removes a project’s declared dependencies;</li>
 <li>resolves a consistent, compatible set of versions for the full dependency graph;</li>
 <li>writes a <strong>lockfile</strong> recording exactly which versions were resolved;</li>
-<li>runs commands inside the correct project environment on request.</li>
+<li>runs commands inside the correct project environment.</li>
 </ul>
-<p>Two practical reasons make <code>uv</code> a good default choice for a short teaching session and for everyday research use. First, it is implemented in Rust and is substantially faster than the pure-Python tools it replaces, particularly for dependency resolution and installation — for a live demonstration, this means we are not sitting waiting for a spinner. Second, it deliberately unifies steps that other tools historically required several separate programs for (interpreter installation, environment creation, dependency locking), which reduces the number of moving parts a beginner needs to hold in their head at once.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<code>uv</code> is not the only viable option
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>conda</code>/<code>mamba</code> remain the standard choice when a project’s dependencies include non-Python components (compiled libraries, R packages, and so on) that PyPI does not distribute.</p>
-<p><code>Poetry</code> and <code>PDM</code> offer broadly similar project-based workflows to <code>uv</code>. The concepts in this session — declared dependencies, a resolved lockfile, and an isolated environment reconstructable from both — apply to all of them; only the specific commands differ.</p>
-</div>
-</div>
+<p>Two practical reasons make <code>uv</code> a good default choice. First, it is implemented in Rust and is substantially faster than many of the tools it replaces, particularly for dependency resolution and installation.</p>
+<p>Second, it unifies steps that historically required several separate tools, including interpreter installation, environment creation, and dependency locking. This reduces the number of moving parts a beginner needs to keep track of.</p>
 
 
 </section>
