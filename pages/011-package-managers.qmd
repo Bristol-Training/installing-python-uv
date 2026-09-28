@@ -4,7 +4,7 @@ title: "What is a package manager?"
 
 A **package manager** is software that installs, updates, removes, and keeps track of other software packages, together with the constraints between them. Operating systems have long had their own (`apt` on Debian/Ubuntu, `brew` on macOS, `winget` on Windows); Python has its own ecosystem, built around the [Python Package Index (PyPI)](https://pypi.org/) as the central public repository.
 
-In Python, a *package* is simply reusable code, published so that other people do not need to write it themselves. For example:
+In Python, a *package* is reusable code published so that other people do not need to write it themselves. For example:
 
 - `pandas` provides data structures and operations for tabular data;
 - `numpy` provides fast, array-based numerical computing;
@@ -13,29 +13,26 @@ In Python, a *package* is simply reusable code, published so that other people d
 
 ### Dependencies, and why resolution is hard
 
-A package can itself depend on other packages, which depend on others in turn. These indirect requirements are called **transitive dependencies**. Installing `pandas`, for example, pulls in `numpy` as a dependency without you asking for `numpy` by name.
+A package can itself depend on other packages, which may depend on others in turn. These indirect requirements are called **transitive dependencies**. Installing `pandas`, for example, pulls in `numpy` as a dependency without you asking for it by name.
 
-This quickly produces a *dependency graph* rather than a simple list. Two direct dependencies you ask for might each place different, incompatible constraints on a shared transitive dependency — package A might require `numpy>=1.24`, while package B only supports `numpy<1.24`. Finding a single set of versions that satisfies every constraint simultaneously is known as **dependency resolution**, and in general it is a computationally hard problem (it is closely related to the Boolean satisfiability problem, SAT). This is precisely the part of environment management that is tedious and error-prone to do by hand, and precisely the part a package manager exists to automate.
+This quickly produces a *dependency graph* rather than a simple list. Two direct dependencies might place incompatible constraints on a shared transitive dependency — package A might require `numpy>=1.24`, while package B only supports `numpy<1.24`.
 
-Historically, Python's own installer, `pip`, resolved dependencies using a comparatively simple, backtracking algorithm, and for a long time did not resolve them at all — it simply installed packages in the order given, sometimes silently overwriting an already-installed, compatible version with an incompatible one. This is one of the main reasons the community has since built more sophisticated tools (`pip-tools`, `Poetry`, `PDM`, `conda`, and now `uv`) around a proper resolver.
+Finding a single set of versions that satisfies every constraint is known as **dependency resolution**. In general, this is a computationally hard problem, closely related to the Boolean satisfiability problem (SAT). This is exactly the kind of tedious and error-prone work that a package manager automates.
+
+Historically, Python's own installer, `pip`, used comparatively simple dependency handling and, for a long time, did not fully resolve dependency conflicts. This is one reason the community has built more sophisticated tools such as `pip-tools`, `Poetry`, `PDM`, `conda`, and now `uv`.
 
 ### Why use `uv`?
 
-[`uv`](https://docs.astral.sh/uv/), developed by Astral, is deliberately scoped to do more than resolve and install packages. It also:
+[`uv`](https://docs.astral.sh/uv/), developed by Astral, is designed to do more than resolve and install packages. It also:
 
-- installs and manages **Python interpreters themselves** (not just packages);
+- installs and manages **Python interpreters themselves**;
 - creates and manages per-project **virtual environments** automatically;
 - adds and removes a project's declared dependencies;
 - resolves a consistent, compatible set of versions for the full dependency graph;
 - writes a **lockfile** recording exactly which versions were resolved;
-- runs commands inside the correct project environment on request.
+- runs commands inside the correct project environment.
 
-Two practical reasons make `uv` a good default choice for a short teaching session and for everyday research use. First, it is implemented in Rust and is substantially faster than the pure-Python tools it replaces, particularly for dependency resolution and installation — for a live demonstration, this means we are not sitting waiting for a spinner. Second, it deliberately unifies steps that other tools historically required several separate programs for (interpreter installation, environment creation, dependency locking), which reduces the number of moving parts a beginner needs to hold in their head at once.
+Two practical reasons make `uv` a good default choice. First, it is implemented in Rust and is substantially faster than many of the tools it replaces, particularly for dependency resolution and installation.
 
-::: {.callout-note}
-### `uv` is not the only viable option
+Second, it unifies steps that historically required several separate tools, including interpreter installation, environment creation, and dependency locking. This reduces the number of moving parts a beginner needs to keep track of.
 
-`conda`/`mamba` remain the standard choice when a project's dependencies include non-Python components (compiled libraries, R packages, and so on) that PyPI does not distribute.
-
-`Poetry` and `PDM` offer broadly similar project-based workflows to `uv`. The concepts in this session — declared dependencies, a resolved lockfile, and an isolated environment reconstructable from both — apply to all of them; only the specific commands differ.
-:::

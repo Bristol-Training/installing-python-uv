@@ -39,7 +39,7 @@ Each flag does something specific:
 - `--pin-python` additionally writes a `.python-version` file, so that any future `uv` command run inside this folder has an explicit, unambiguous default Python version, even without typing `--python` again.
 
 ::: {.callout-note}
-If you see instructions elsewhere that use only `uv init --bare` without pinning a Python version, those are equally valid — `uv` will simply use whichever compatible Python it finds or installs by default. We are being explicit here because this session's subject is precisely how to make that choice deliberate and recorded, rather than implicit.
+If you see instructions elsewhere that use only `uv init --bare` without pinning a Python version, those are equally valid — `uv` will simply use whichever compatible Python it finds or installs by default.
 :::
 
 
@@ -71,7 +71,7 @@ A single command has quietly done several things:
 - installed every required package — direct and transitive — into that environment.
 
 
-### A first real test
+### A final test
 
 Run Python inside the project's environment, and check the version:
 
@@ -93,4 +93,4 @@ uv run python -c "import pandas; print('pandas', pandas.__version__)"
 pandas 2.2.3
 ```
 
-If that prints a version number rather than an error, your project environment is working end-to-end: the right interpreter, running with the right package installed, resolved and recorded by `uv`.
+If that prints a version number rather than an error, your project environment is working end-to-end.

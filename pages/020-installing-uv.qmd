@@ -42,7 +42,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 :::
 
-Close and reopen your terminal if the installer asks you to (this refreshes your shell's `PATH` so it can find the new command), then check the install worked:
+**Close and reopen your terminal** if the installer asks you to (this refreshes your shell's `PATH` so it can find the new command), then check the install worked:
 
 ```bash
 uv --version
@@ -58,6 +58,3 @@ You should see a version number — the exact numbers will differ depending on w
 Only run installation commands from sources you trust. The commands above are taken from the official `uv` [installation documentation](https://docs.astral.sh/uv/getting-started/installation/); prefer fetching them from that page directly if you are ever unsure whether a copy you have seen elsewhere has been altered.
 :::
 
-### What did that actually install?
-
-At this point, no Python interpreter has been installed yet — only `uv` itself, a single small executable. This is deliberate: `uv` is the *tool* that will go on to fetch, manage, and run Python interpreters on your behalf, in the next step.
