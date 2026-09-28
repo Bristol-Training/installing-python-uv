@@ -1,0 +1,16 @@
+---
+title: "References"
+---
+
+These materials are adapted from, and informed by:
+
+- Jean Golding Institute / Bristol Training, [Python Environment Setup](https://bristol-training.github.io/data-science-project-setup/pages/02-python.html)
+- James Thomas, [Can others reproduce your results? Using `uv` and `pixi` in Python data analysis projects](https://github.com/jatonline/managing-dependencies-using-uv-and-pixi)
+- Astral, [`uv` documentation](https://docs.astral.sh/uv/), especially:
+  - [Installing `uv`](https://docs.astral.sh/uv/getting-started/installation/)
+  - [Installing and managing Python](https://docs.astral.sh/uv/guides/install-python/)
+  - [Python versions](https://docs.astral.sh/uv/concepts/python-versions/)
+  - [Creating projects](https://docs.astral.sh/uv/concepts/projects/init/)
+  - [Running commands in projects](https://docs.astral.sh/uv/concepts/projects/run/)
+  - [Locking and syncing](https://docs.astral.sh/uv/concepts/projects/sync/)
+  - [Using Python environments](https://docs.astral.sh/uv/pip/environments/)

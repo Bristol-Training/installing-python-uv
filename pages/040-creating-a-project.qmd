@@ -1,0 +1,96 @@
+---
+title: "Create a project"
+---
+
+A **project** is simply a folder that has been given a small set of files describing its Python version and dependencies. Creating one gives the environment a permanent home, and gives *you* files that record its configuration, rather than that configuration existing only in your memory of which commands you happened to type.
+
+Create a folder and move into it:
+
+::: {.panel-tabset}
+### Windows PowerShell
+
+```powershell
+mkdir python-local-demo
+cd python-local-demo
+```
+
+### macOS / Linux
+
+```bash
+mkdir python-local-demo
+cd python-local-demo
+```
+:::
+
+Now initialise a minimal project using Python 3.13:
+
+```bash
+uv init --bare --python 3.13 --pin-python
+```
+
+```text
+Initialized project `python-local-demo`
+```
+
+Each flag does something specific:
+
+- `--bare` keeps the generated project deliberately minimal — no example script, no README template — which is useful for a short beginner session where we want to look at exactly what got created and understand every line.
+- `--python 3.13` tells `uv` which Python version to record as this project's requirement in `pyproject.toml`.
+- `--pin-python` additionally writes a `.python-version` file, so that any future `uv` command run inside this folder has an explicit, unambiguous default Python version, even without typing `--python` again.
+
+::: {.callout-note}
+If you see instructions elsewhere that use only `uv init --bare` without pinning a Python version, those are equally valid — `uv` will simply use whichever compatible Python it finds or installs by default. We are being explicit here because this session's subject is precisely how to make that choice deliberate and recorded, rather than implicit.
+:::
+
+
+
+### Add some packages
+
+An empty project is not very useful on its own. Add a small set of commonly used research packages:
+
+```bash
+uv add jupyterlab pandas matplotlib
+```
+
+```text
+Resolved 87 packages in 612ms
+Prepared 87 packages in 3.94s
+Installed 87 packages in 1.21s
+ + jupyterlab==4.3.1
+ + pandas==2.2.3
+ + matplotlib==3.9.2
+ ...
+```
+
+A single command has quietly done several things:
+
+- updated the project's **declared** dependencies in `pyproject.toml`;
+- resolved a mutually compatible set of versions for those packages and every package they depend on;
+- written (or updated) `uv.lock` with the exact resolution;
+- created the project's `.venv/` environment, if it did not already exist;
+- installed every required package — direct and transitive — into that environment.
+
+
+### A first real test
+
+Run Python inside the project's environment, and check the version:
+
+```bash
+uv run python --version
+```
+
+```text
+Python 3.13.7
+```
+
+Then use a package you just installed, to check it was actually wired up correctly:
+
+```bash
+uv run python -c "import pandas; print('pandas', pandas.__version__)"
+```
+
+```text
+pandas 2.2.3
+```
+
+If that prints a version number rather than an error, your project environment is working end-to-end: the right interpreter, running with the right package installed, resolved and recorded by `uv`.

@@ -1,0 +1,81 @@
+---
+title: "Running the project environment"
+---
+
+There are two ways to make sure a command uses your project's Python and packages, rather than whatever your system's global `python` happens to resolve to. `uv` makes the first one the default and, for most day-to-day work, the only one you need.
+
+### Recommended: `uv run`
+
+With a `uv` project you normally do **not** need to activate anything. Prefix the command you want with `uv run`:
+
+Run Python interactively:
+
+```bash
+uv run python
+```
+
+Run a script:
+
+```bash
+uv run analysis.py
+```
+
+Run JupyterLab:
+
+```bash
+uv run jupyter lab
+```
+
+Before running your command, `uv` first checks that `uv.lock` is still consistent with `pyproject.toml`, and that `.venv/` is in sync with `uv.lock` — updating either automatically if not. This is a small but important reproducibility guarantee: `uv run` does not just *use* the project's environment, it actively verifies it is the environment the project files currently describe, every time.
+
+To exit the interactive Python prompt:
+
+```python
+exit()
+```
+
+To stop JupyterLab, return to the terminal it is running in and press <kbd>Ctrl</kbd>+<kbd>C</kbd> (you may need to confirm the shutdown).
+
+### Optional: manually activating the virtual environment
+
+Many Python tutorials that predate `uv`, or that use lower-level tools directly, describe *activating* a virtual environment instead. It is worth being able to recognise this pattern even if you do not use it day to day:
+
+::: {.panel-tabset}
+### Windows PowerShell
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Windows Command Prompt
+
+```batch
+.venv\Scripts\activate.bat
+```
+
+### macOS / Linux
+
+```bash
+source .venv/bin/activate
+```
+:::
+
+After activation, your shell's `PATH` has been modified so that plain commands, without the `uv run` prefix, refer to this environment:
+
+```bash
+python --version
+```
+
+To leave the activated environment:
+
+```bash
+deactivate
+```
+
+::: {.callout-tip}
+If PowerShell blocks an activation script due to its execution policy, you can simply use `uv run ...` instead — activation is a convenience, not a requirement, for normal `uv` project workflows.
+:::
+
+### Why does this distinction matter?
+
+Activation changes your *shell's* state for as long as that terminal session lasts, which is easy to forget about — a command run in a different terminal tab, or an hour later after you have moved on to another task, may silently use the wrong environment. `uv run` instead makes the environment an explicit, visible part of every single command, which is a better default for reproducibility: anyone reading a script or a README that uses `uv run` can see, from that command alone, which environment it is meant to run in.

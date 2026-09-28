@@ -1,0 +1,25 @@
+---
+title: "What are we actually installing?"
+---
+
+The instruction "install Python" is deceptively simple. In practice, it bundles together at least four distinct concerns, and most of the confusion people encounter with Python setup comes from not separating them.
+
+1. **An interpreter.** The Python *interpreter* is the program that reads your `.py` files and executes them. There is no single "Python" — there are numbered versions (3.11, 3.12, 3.13, ...) that differ in language features, performance, and package compatibility, and a research group may deliberately need more than one.
+2. **Packages.** Almost no non-trivial analysis is written from scratch. Libraries such as `pandas` (tabular data), `numpy` (numerical arrays), `matplotlib` (plotting), or `jupyterlab` (interactive notebooks) provide functionality that would otherwise take months to reimplement. A typical research project depends, directly or indirectly, on tens to hundreds of such packages.
+3. **A project environment.** Different projects usually need different combinations of packages, and sometimes incompatible versions of the *same* package. An environment is an isolated location on disk containing exactly the interpreter and packages one project needs, so that installing something for project B cannot silently change what project A sees.
+4. **A tool that manages all of the above.** Something has to fetch interpreters, resolve which package versions are mutually compatible, install them, and keep a record of what was installed. In this session, that tool is [`uv`](https://docs.astral.sh/uv/).
+
+A bare Python interpreter is sufficient to run a short script, but it is not sufficient for research software: as soon as a second package, a second project, or a second collaborator is involved, you need a systematic way to keep track of what each project requires.
+
+
+### Why not just install everything once, globally?
+
+It is tempting to install Python once and `pip install` every package you ever need into that single installation. This is what most people do the first time they use Python, and for a single short-lived script it is harmless. It becomes a liability as soon as:
+
+- two projects need different, incompatible versions of the same package;
+- you want to know, months later, exactly which package versions a given piece of analysis used;
+- you want a collaborator, a peer reviewer, or a continuous-integration server to run your code with the same result you got;
+- you want to remove a project without worrying about breaking something else that quietly depended on one of its packages.
+
+None of these are *hypothetical* — package updates that change results, remove functions, or drop support for an old Python version happen routinely in the scientific Python ecosystem. Treating environments as disposable, per-project, and reconstructable from a small number of text files avoids all of the above by construction, rather than by discipline.
+

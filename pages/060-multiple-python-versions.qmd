@@ -1,0 +1,110 @@
+---
+title: "What if I have multiple versions of Python installed?"
+---
+
+Having several Python versions installed at once is normal, not a sign of a broken setup. On a typical research machine you might find:
+
+- a version supplied by the operating system (used by some system tools — do not remove it);
+- a version installed from python.org;
+- a version installed via Homebrew, `apt`, or another OS-level package manager;
+- one or more versions installed by `uv` itself;
+- separate interpreters living inside individual projects' `.venv/` folders.
+
+These can coexist without conflict because each lives in its own location on disk. Confusion arises not from their coexistence, but from not knowing which one a given command is about to use.
+
+### Why this becomes confusing
+
+When you type a bare command such as:
+
+```bash
+python
+```
+
+your shell searches the directories listed in its `PATH` environment variable, in order, and runs the *first* matching executable it finds. That is not necessarily the version you expect, and it can silently differ between two terminal windows, two machines, or before and after installing new software.
+
+You may also encounter several differently-named commands on the same system:
+
+```bash
+python
+python3
+python3.12
+python3.13
+```
+
+which can point to entirely different interpreters, with different packages installed for each.
+
+### Useful diagnostic commands
+
+Rather than guessing, ask directly. See every Python version `uv` currently knows about:
+
+```bash
+uv python list --only-installed
+```
+
+Find the executable path for a specific version:
+
+```bash
+uv python find 3.13
+```
+
+See which version this *project* is actually using:
+
+```bash
+uv run python --version
+```
+
+See the interpreter's exact path from inside Python itself — the most unambiguous check available:
+
+```bash
+uv run python -c "import sys; print(sys.executable)"
+```
+
+```text
+/Users/you/repos/python-local-demo/.venv/bin/python
+```
+
+You can also inspect what your shell itself would find, independently of `uv`:
+
+::: {.panel-tabset}
+### Windows
+
+```powershell
+where python
+where python3
+```
+
+### macOS / Linux
+
+```bash
+which -a python
+which -a python3
+```
+:::
+
+### How does `uv` decide which interpreter to use?
+
+Inside a project, `uv` consults, in order of specificity: an explicit `--python` flag on the command line, the project's `.python-version` file, the `requires-python` field in `pyproject.toml`, and finally the project's existing `.venv/` if one is already built. For example, to bypass a project's own pin and test explicitly against a different version:
+
+```bash
+uv run --python 3.13 python --version
+```
+
+::: {.callout-warning}
+Do not remove or overwrite an operating-system-provided Python just because another version is available. Some OS tools may depend on it internally. Project environments exist precisely so you never need to touch that installation.
+:::
+
+### Changing a project's Python version
+
+Minor version changes (for example 3.12 to 3.13) can affect which package versions are compatible, so this is a deliberate environment change, not a cosmetic one. Update the pin:
+
+```bash
+uv python pin 3.13
+```
+
+then bring the environment back in line with the project files:
+
+```bash
+uv sync
+```
+
+The recurring theme across this page is: `.venv/` is disposable, rebuildable state. The information that actually matters for reproducing your work lives in `pyproject.toml` and `uv.lock` — always prefer asking the *project* which interpreter it is using, over guessing from a bare, global command.

@@ -1,0 +1,103 @@
+---
+title: "Troubleshooting"
+---
+
+### `uv` is not recognised / command not found
+
+First close the terminal completely and open a new one (this reloads your shell's `PATH`), then try again:
+
+```bash
+uv --version
+```
+
+If it still fails, return to the official [`uv` installation instructions](https://docs.astral.sh/uv/getting-started/installation/) and check the alternative installation method listed for your operating system.
+
+On managed university or company computers, software installation or outbound network access may be restricted by policy. Ask your local IT or support team if necessary — this is a legitimate machine restriction, not a step you have done incorrectly.
+
+### `python --version` shows a different version than expected
+
+This can be completely normal if several Python installations are present on your machine — see [Multiple Python versions](060-multiple-python-versions.qmd) for why.
+
+Inside a project, prefer asking the project directly rather than the bare command:
+
+```bash
+uv run python --version
+```
+
+To see exactly which executable file is being used:
+
+```bash
+uv run python -c "import sys; print(sys.executable)"
+```
+
+If that path is not inside your project's `.venv/` folder, something is running outside the project environment — check you are in the correct project directory.
+
+### PowerShell will not activate `.venv`
+
+You do not need to activate the environment at all. Use `uv run` instead:
+
+```powershell
+uv run python
+```
+
+or:
+
+```powershell
+uv run jupyter lab
+```
+
+This sidesteps PowerShell's script-execution policy entirely, since no activation script needs to run.
+
+### I accidentally deleted `.venv/`
+
+That is fine — this is exactly the situation `uv.lock` and `pyproject.toml` exist for. Recreate the environment from the project files:
+
+```bash
+uv sync
+```
+
+Then confirm it worked:
+
+```bash
+uv run python --version
+```
+
+### A collaborator has cloned my project
+
+If they have `uv` installed, they only need to enter the project folder and run:
+
+```bash
+uv sync
+```
+
+then:
+
+```bash
+uv run python
+```
+
+`uv` uses the project's `pyproject.toml` and `uv.lock` to reconstruct a matching environment — they do not need to know, or guess, which packages your project needs.
+
+### I want another package
+
+Add it to the project (this updates `pyproject.toml`, resolves it, updates `uv.lock`, and installs it, all in one step):
+
+```bash
+uv add PACKAGE_NAME
+```
+
+For example:
+
+```bash
+uv add seaborn
+```
+
+Remove one the same way:
+
+```bash
+uv remove PACKAGE_NAME
+```
+
+### `uv add` or `uv sync` seems to hang, or fails partway through resolving
+
+This is most often a network issue (a slow or restricted connection to PyPI) rather than a problem with `uv` or your project. Try again on a different network if one is available, and check with IT support whether outbound access to `pypi.org` and `files.pythonhosted.org` is permitted on a managed machine.

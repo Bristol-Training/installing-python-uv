@@ -1,0 +1,38 @@
+---
+title: "Why does this matter for research?"
+---
+
+Suppose an analysis runs correctly today. Six months later — during peer review, when a collaborator joins the project, or when you return to extend the work for a follow-up paper — the same code is checked out and run again.
+
+The source code is byte-for-byte identical, yet the result can still change, or the code can fail to run at all, because:
+
+- a dependency has released a new major version with a changed or removed function;
+- a *transitive* dependency (one you never installed directly) has changed behaviour;
+- a package has dropped support for the Python version you are using;
+- a collaborator's machine has a different Python version installed by default;
+- packages installed globally for an unrelated project are shadowing the ones this project expects.
+
+None of these require you to have made a mistake. They are the ordinary, expected consequence of software evolving over time, combined with not having recorded which point in that evolution your result depended on.
+
+### Code is necessary, but not sufficient
+
+For computational research, this leads to an important principle: **your source code is not, by itself, the complete description of the computation you ran.** The result of running `analysis.py` is a function of the code *and* of the interpreter and package versions available when it runs. Two people running identical code with different environments are not necessarily running the same computation.
+
+A reproducible project therefore needs to record enough information about its environment that the environment itself can be reconstructed later — ideally automatically, and ideally by someone who was not involved in creating it.
+
+
+
+### Reproducibility is a spectrum, not a switch
+
+A lockfile is a large improvement over "whatever happens to be installed," but it does not make a project reproducible in an absolute sense. It fixes the Python-package layer of the environment; it says nothing about:
+
+- the operating system and its own system libraries;
+- hardware differences (for example, floating-point behaviour on different CPU architectures, or GPU driver versions);
+- external programs the code shells out to;
+- the data itself, if it is not version-controlled alongside the code;
+- random seeds, if stochastic algorithms are involved;
+- external services (APIs, databases) whose state can change independently of your code.
+
+Some of these can be addressed with further tooling — containers (Docker, Apptainer) address the operating-system layer; explicit seeding addresses stochasticity; data version control tools (DVC, Git LFS) address large or changing datasets. The right amount of machinery depends on the stakes: a teaching demonstration needs less rigour than a clinical trial's analysis pipeline.
+
+The realistic goal for this session is narrower and more achievable: make the **Python computational environment** explicit, version-controlled, and mechanically reconstructable, rather than dependent on whatever happened to already be installed on one particular laptop. That alone removes one of the most common causes of "it works on my machine."

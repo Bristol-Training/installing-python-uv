@@ -1,0 +1,115 @@
+---
+title: "What are the files in the project folder?"
+---
+
+After the steps on the previous page, the project folder looks approximately like this:
+
+```text
+python-local-demo/
+├── .python-version
+├── .venv/
+├── pyproject.toml
+└── uv.lock
+```
+
+If you go on to add notebooks, scripts, data documentation, or a `README`, the project will grow more files and folders around this core. Each of the four items above plays a distinct, non-overlapping role.
+
+::: {.callout-important}
+### Version-control principle
+
+Commit `pyproject.toml` and `uv.lock` to Git, alongside your code.
+
+Do **not** commit `.venv/`. It is large, platform-specific, generated state, and can always be recreated from the two files above.
+:::
+
+
+### `pyproject.toml`
+
+This is the project's main, human-edited configuration file. It follows a standard format shared across the modern Python packaging ecosystem (not something specific to `uv`), which is part of why tools like Poetry and PDM can also read it. A simplified version looks like:
+
+```toml
+[project]
+name = "python-local-demo"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "jupyterlab",
+    "matplotlib",
+    "pandas",
+]
+```
+
+It records your project's **declared, direct dependencies** and its Python compatibility requirement. Note what is *absent*: no transitive dependencies, and no exact pinned versions — those are deliberately kept in a separate file, described next. You normally edit this list using commands, rather than by hand:
+
+```bash
+uv add seaborn
+uv remove matplotlib
+```
+
+### `uv.lock`
+
+This is the **lockfile** — the resolved counterpart to the declared list above. It records the complete dependency graph, every transitive dependency, the exact version of each, and a cryptographic hash of the file that was downloaded for each one (so that a future install can verify it received exactly the same bytes, not merely "a" version matching the same version number).
+
+This is what allows `uv` to reconstruct a bit-for-bit consistent environment later, on a different machine. Do not edit it by hand — treat it as a build artefact that `uv` maintains for you.
+
+To explicitly (re)create the lockfile from the current `pyproject.toml`, without touching the installed environment:
+
+```bash
+uv lock
+```
+
+To create or update the local environment *from* the current project files (this is what most day-to-day use needs):
+
+```bash
+uv sync
+```
+
+### `.python-version`
+
+A one-line file recording which Python version this project prefers, for example:
+
+```text
+3.13
+```
+
+Change the pin with:
+
+```bash
+uv python pin 3.13
+```
+
+For particularly strict reproducibility you can pin a full patch version (for example `3.13.7` rather than `3.13`), at the cost of having to update that pin deliberately whenever you want a newer patch release.
+
+### `.venv/`
+
+The project's actual **virtual environment**: a self-contained folder holding a Python interpreter dedicated to this project, every package installed for it, and any command-line tools those packages provide (such as `jupyter`).
+
+Treat `.venv/` as disposable, generated local state — never something to back up, share, or edit directly. If it is deleted, or corrupted, or you simply want a clean slate, rebuild it from the two files above:
+
+```bash
+uv sync
+```
+
+::: {.callout-important}
+### What should go into Git?
+
+**Usually commit:**
+
+```text
+pyproject.toml
+uv.lock
+.python-version
+your code
+your notebooks
+README.md
+```
+
+**Usually do not commit:**
+
+```text
+.venv/
+__pycache__/
+large generated outputs
+secrets or credentials
+```
+:::

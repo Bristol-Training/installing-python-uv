@@ -1,0 +1,63 @@
+---
+title: "Install uv"
+---
+
+`uv` is installed **once per computer** (not once per project), and then used everywhere. Choose the instructions for your operating system below.
+
+::: {.panel-tabset}
+### Windows
+
+Open **PowerShell** or **Command Prompt** and run:
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+An alternative, if you have WinGet available, is:
+
+```powershell
+winget install --id=astral-sh.uv -e
+```
+
+### macOS
+
+Open **Terminal** and run:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+If you use Homebrew, another option is:
+
+```bash
+brew install uv
+```
+
+### Linux
+
+Open a terminal and run:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+:::
+
+Close and reopen your terminal if the installer asks you to (this refreshes your shell's `PATH` so it can find the new command), then check the install worked:
+
+```bash
+uv --version
+```
+
+```text
+uv 0.9.6
+```
+
+You should see a version number — the exact numbers will differ depending on when you install it, which is fine.
+
+::: {.callout-warning}
+Only run installation commands from sources you trust. The commands above are taken from the official `uv` [installation documentation](https://docs.astral.sh/uv/getting-started/installation/); prefer fetching them from that page directly if you are ever unsure whether a copy you have seen elsewhere has been altered.
+:::
+
+### What did that actually install?
+
+At this point, no Python interpreter has been installed yet — only `uv` itself, a single small executable. This is deliberate: `uv` is the *tool* that will go on to fetch, manage, and run Python interpreters on your behalf, in the next step.

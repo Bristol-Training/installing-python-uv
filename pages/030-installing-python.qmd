@@ -1,0 +1,66 @@
+---
+title: "Use uv to install Python"
+---
+
+With `uv` itself installed, we can now ask it to install a Python interpreter. Unlike the operating-system-provided Python you may already have (or the installers from python.org), `uv`-managed interpreters are downloaded into a location `uv` controls, are trivial to install side by side in multiple versions, and can be reproduced identically on another machine.
+
+For this session we will use **Python 3.13** as a concrete, current example. A research group, course, or funding body may reasonably standardise on a different supported version — the workflow is the same regardless of which one you pick.
+
+Install it with:
+
+```bash
+uv python install 3.13
+```
+
+```text
+Installed Python 3.13.7 in 4.31s
+ + cpython-3.13.7-macos-aarch64-none
+```
+
+This asks `uv` to install the latest available *patch* release in the 3.13 *minor* series (Python's versioning follows `major.minor.patch`; patch releases are typically bug and security fixes, and are the level of granularity you can usually treat as interchangeable within a project).
+
+Check which Python versions `uv` can now see on your machine:
+
+```bash
+uv python list --only-installed
+```
+
+```text
+cpython-3.13.7-macos-aarch64-none    /Users/you/.local/share/uv/python/cpython-3.13.7-macos-aarch64-none/bin/python3.13
+```
+
+Find the exact executable `uv` would use if you asked for "3.13":
+
+```bash
+uv python find 3.13
+```
+
+```text
+/Users/you/.local/share/uv/python/cpython-3.13.7-macos-aarch64-none/bin/python3.13
+```
+
+You can test this interpreter directly, without touching or relying on whatever your computer's global `python` command happens to point to:
+
+```bash
+uv run --python 3.13 python --version
+```
+
+```text
+Python 3.13.7
+```
+
+### A first check that "your" Python works
+
+Now is a good moment to convince yourself this interpreter runs code, before we build anything more elaborate on top of it:
+
+```bash
+uv run --python 3.13 python -c "print('Hello from', __import__('sys').version)"
+```
+
+```text
+Hello from 3.13.7 (main, ...) [Clang ...]
+```
+
+::: {.callout-tip}
+`uv` can also download a missing Python version *automatically* the first time a project requires it — you do not strictly have to run `uv python install` yourself in normal use. We are doing it explicitly in this workshop so the installation step is visible and easy to reason about, rather than happening invisibly the first time you create a project.
+:::

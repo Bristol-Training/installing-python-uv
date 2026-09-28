@@ -1,0 +1,42 @@
+---
+title: "Introduction"
+---
+
+Welcome to **Installing Python Locally with uv**, a short session on setting up a reproducible Python environment for research and teaching.
+
+Almost every computational research project eventually runs into the same problem: code that worked perfectly on one machine fails, produces different numbers, or simply refuses to run on another. Usually the *code* has not changed — the *environment* it depends on has.
+
+This short session will explore how to set up a reproducible Python environment for research and teaching. By the end of it you will have installed a modern **Python package and project manager**, [`uv`](https://docs.astral.sh/uv/), used it to install an isolated Python interpreter, and built a small project whose computational environment can be reconstructed exactly — by you, by a collaborator, or by a peer reviewer — at any point in the future.
+
+
+### Intended learning outcomes
+
+By the end of this session, you will be able to:
+
+- explain why recording software versions matters for reproducible research;
+- install `uv` and use it to install a specific version of Python;
+- create a small Python project and identify the files `uv` uses to describe it;
+- add and remove Python packages from a project;
+- run Python or JupyterLab inside the correct project environment.
+
+
+### Software and access required
+
+You will need:
+
+- a laptop on which you have permission to install software (if you are on a managed university or company machine and are unsure, ask your local IT support);
+- a terminal application (PowerShell or Command Prompt on Windows; Terminal on macOS; any terminal emulator on Linux);
+- an internet connection, to download the `uv` installer, a Python interpreter, and a small number of packages.
+
+No prior installation of Python is required — part of the point of this session is that `uv` can provide one for you, without relying on whatever may or may not already be on your computer.
+
+
+### About this course
+
+These course materials have been designed and developed by **Pau Erola, PhD** (Jean Golding Institute, University of Bristol).
+
+We used the enhancement of AI in alignment with our institutional guidance:
+
+- **Claude (Sonnet 5)** – Writing assistance, expansion of content, and generation of code examples
+
+For queries related to this course please contact <jgi-training@bristol.ac.uk>.

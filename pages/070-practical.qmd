@@ -1,0 +1,172 @@
+---
+title: "Hands-on installation"
+---
+
+Install Python and build a small, reproducible test project on your own computer. Work through the checklist below in order. **If you get stuck, ask for help**.
+
+### Step 1 — Install `uv`
+
+::: {.panel-tabset}
+### Windows
+
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### macOS / Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+:::
+
+Close and reopen your terminal if requested, then check:
+
+```bash
+uv --version
+```
+
+### Step 2 — Install Python
+
+```bash
+uv python install 3.13
+```
+
+Check it is there:
+
+```bash
+uv python list --only-installed
+```
+
+### Step 3 — Create a project
+
+```bash
+mkdir python-local-demo
+cd python-local-demo
+uv init --bare --python 3.13 --pin-python
+```
+
+### Step 4 — Add packages
+
+```bash
+uv add jupyterlab pandas matplotlib
+```
+
+### Step 5 — Verify the environment with a small script
+
+Rather than only checking version numbers, create a tiny script that exercises the interpreter and every package you just installed. Save the following as `check_setup.py` inside `python-local-demo/` (use any text editor, or your terminal):
+
+```python
+"""Verify that the project environment is set up correctly."""
+import sys
+import pandas as pd
+import matplotlib
+
+print("Python executable:", sys.executable)
+print("Python version:   ", sys.version.split()[0])
+print("pandas version:   ", pd.__version__)
+print("matplotlib version:", matplotlib.__version__)
+
+# A tiny bit of real work, so we are testing behaviour, not just imports
+df = pd.DataFrame({"x": range(5), "y": [v * v for v in range(5)]})
+print("\nA small DataFrame:")
+print(df)
+print("\nSum of y:", df["y"].sum())
+```
+
+Run it inside the project environment:
+
+```bash
+uv run python check_setup.py
+```
+
+```text
+Python executable: /Users/you/python-local-demo/.venv/bin/python
+Python version:    3.13.7
+pandas version:    2.2.3
+matplotlib version: 3.9.2
+
+A small DataFrame:
+   x   y
+0  0   0
+1  1   1
+2  2   4
+3  3   9
+4  4  16
+
+Sum of y: 30
+```
+
+If this runs without an error and the `Python executable` path points *inside* your project folder's `.venv/`, your environment is correctly set up end to end.
+
+Optional — inspect the resolved dependency graph:
+
+```bash
+uv tree
+```
+
+### Step 6 — Start JupyterLab
+
+```bash
+uv run jupyter lab
+```
+
+A browser window should open automatically. If it does not, look in the terminal output for a local URL beginning with something like:
+
+```text
+http://localhost:8888/lab?token=...
+```
+
+and copy that into your browser manually.
+
+Inside JupyterLab, open a new notebook and run the same checks interactively, cell by cell:
+
+```python
+import sys
+print(sys.executable)
+```
+
+```python
+import pandas as pd
+pd.DataFrame({"a": [1, 2, 3]})
+```
+
+To stop JupyterLab, return to the terminal and press <kbd>Ctrl</kbd>+<kbd>C</kbd>.
+
+### Step 7 — Reproducibility check
+
+Look inside your project folder. Can you identify these?
+
+```text
+.python-version
+pyproject.toml
+uv.lock
+.venv/
+check_setup.py
+```
+
+Explain to the person next to you, or to yourself:
+
+1. Which files would you commit to Git?
+2. Which directory would you *not* commit?
+3. Which file records the direct, declared dependencies?
+4. Which file records the resolved, exact dependency versions?
+5. Which command runs Python inside the project's own environment?
+
+::: {.callout-tip collapse="true"}
+### Answers
+
+1. Commit `.python-version`, `pyproject.toml`, `uv.lock`, `check_setup.py`, and any other research code or notebooks.
+2. Do not commit `.venv/`.
+3. `pyproject.toml` records the project's declared dependencies.
+4. `uv.lock` records the resolved dependency graph.
+5. `uv run python` (or `uv run` followed by any other command) runs it inside the project environment.
+:::
+
+### If you finish early
+
+- Add another package, for example `uv add seaborn`, and inspect how `pyproject.toml` and `uv.lock` both change.
+- Run `uv tree` and try to find a package that is a shared transitive dependency of two of your direct dependencies.
+- Delete `.venv/` entirely and rebuild it with `uv sync` — confirm `check_setup.py` still works afterwards.
+- Compare the output of `python --version` (your system's global command) with `uv run python --version` (the project's command) — are they the same on your machine?
+- Install a second Python minor version (for example `uv python install 3.12`) and inspect `uv python list --only-installed`.
