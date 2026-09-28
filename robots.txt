@@ -1,0 +1,1 @@
+Sitemap: https://bristol-training.github.io/installing-python-with-uv/sitemap.xml
